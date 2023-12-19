@@ -35,7 +35,8 @@ int check_the_builtins(general_t *information, char **args)
 		{"exit", bin_exits},
 		{"env", bin_env_1},
 		{"setenv", bin_setenv},
-		{"unsetenv", bin_unsetenv}
+		{"unsetenv", bin_unsetenv},
+		{"cd", bin_cd},
 	};
 
 	weight = sizeof(builtins) / sizeof(builtins[0]);
@@ -107,7 +108,7 @@ void bin_unsetenv(general_t *information, char **args)
 
 void bin_cd(general_t *information, char **args)
 {
-	char *new_dir = args[1], *oldpwd = getcwd(NULL, 0);
+	char *new_dir = args[1], *oldpwd;
 
 	if (new_dir == NULL)
 	{
@@ -120,6 +121,7 @@ void bin_cd(general_t *information, char **args)
 			return;
 		}
 	}
+	oldpwd = getcwd(NULL, 0);
 
 	if (oldpwd == NULL)
 	{

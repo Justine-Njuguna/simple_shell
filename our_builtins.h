@@ -11,7 +11,7 @@ int check_the_builtins(general_t *information, char **args);
 int builtin_files(general_t *information, char **args);
 void bin_unsetenv(general_t *information, char **args);
 void bin_setenv(general_t *information, char **args);
-
+void bin_cd(general_t *information, char **args);
 /* exits.c */
 void bin_exits(general_t *information, char **args);
 int nums_control(general_t *information, char *num);
