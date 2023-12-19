@@ -21,7 +21,7 @@ int builtin_files(general_t *information, char **args)
 }
 
 /**
- * check_the_builtin - Check if the command is a builtin or not.
+ * check_the_builtins - Check if the command is a builtin or not.
  * @information: Info about the shell.
  * @args: Arguments of the comms.
  *
@@ -97,4 +97,54 @@ void bin_unsetenv(general_t *information, char **args)
 		information->error_code = _CODE_UNSETENV_FAILURE;
 		perror("Error");
 	}
+}
+
+/**
+ * bin_cd - Change current directory.
+ * @information: Info about the shell.
+ * @args: Arguments of the command.
+ */
+
+void bin_cd(general_t *information, char **args)
+{
+	char *new_dir, *old_dir = getcwd(NULL, 0);
+
+	if (args[1] == NULL)
+		new_dir = getenv("HOME");
+	else if (_strcmp(args[1], "-") == 0)
+		new_dir = getenv("OLDPWD");
+	else
+		new_dir = args[1];
+
+	if (new_dir == NULL)
+	{
+		information->status_code = 2;
+		information->error_code = _CODE_UNKNOWN_HOME;
+		dprintf(STDERR_FILENO, "cd: No home directory.\n");
+		return;
+	}
+	if (old_dir == NULL)
+	{
+		information->status_code = 2;
+		information->error_code = _CODE_GETCWD_FAILURE;
+		perror("Error");
+		return;
+	}
+	if (chdir(new_dir) == -1)
+	{
+		information->status_code = 2;
+		information->error_code = _CODE_CHDIR_FAILURE;
+		perror("Error");
+	}
+	else
+	{
+		if (setenv("OLDPWD", old_dir, 1) == -1 ||
+				setenv("PWD", new_dir, 1) == -1)
+		{
+			information->status_code = 2;
+			information->error_code = _CODE_SETENV_FAILURE;
+			perror("Error");
+		}
+	}
+	free(old_dir);
 }
