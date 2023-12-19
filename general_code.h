@@ -27,6 +27,10 @@
 #define _CODE_CMD_NOT_EXISTS   132
 #define _CODE_ILLEGAL_NUMBER   133
 
+#define _CODE_SETENV_FAILURE   134
+#define _CODE_UNSETENV_FAILURE 135
+#define _CODE_WRONG_ARGUMENTS  136
+
 typedef struct __attribute__((__packed__))
 {
 	int argc;                 /* Number of arguments received */
