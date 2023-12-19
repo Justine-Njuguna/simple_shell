@@ -107,44 +107,42 @@ void bin_unsetenv(general_t *information, char **args)
 
 void bin_cd(general_t *information, char **args)
 {
-	char *new_dir, *old_dir = getcwd(NULL, 0);
-
-	if (args[1] == NULL)
-		new_dir = getenv("HOME");
-	else if (_strcmp(args[1], "-") == 0)
-		new_dir = getenv("OLDPWD");
-	else
-		new_dir = args[1];
+	char *new_dir = args[1], *oldpwd = getcwd(NULL, 0);
 
 	if (new_dir == NULL)
 	{
-		information->status_code = 2;
-		information->error_code = _CODE_UNKNOWN_HOME;
-		dprintf(STDERR_FILENO, "cd: No home directory.\n");
-		return;
+		new_dir = getenv("HOME");
+		if (new_dir == NULL)
+		{
+			information->status_code = 2;
+			information->error_code = _CODE_UNKNOWN_HOME;
+			perror("Error");
+			return;
+		}
 	}
-	if (old_dir == NULL)
+
+	if (oldpwd == NULL)
 	{
 		information->status_code = 2;
 		information->error_code = _CODE_GETCWD_FAILURE;
 		perror("Error");
 		return;
 	}
+
 	if (chdir(new_dir) == -1)
 	{
 		information->status_code = 2;
 		information->error_code = _CODE_CHDIR_FAILURE;
 		perror("Error");
+		free(oldpwd);
+		return;
 	}
-	else
+	if (setenv("OLDPWD", oldpwd, 1) == -1 ||
+			setenv("PWD", getcwd(NULL, 0), 1) == -1)
 	{
-		if (setenv("OLDPWD", old_dir, 1) == -1 ||
-				setenv("PWD", new_dir, 1) == -1)
-		{
-			information->status_code = 2;
-			information->error_code = _CODE_SETENV_FAILURE;
-			perror("Error");
-		}
+		information->status_code = 2;
+		information->error_code = _CODE_SETENV_FAILURE;
+		perror("Error");
 	}
-	free(old_dir);
+	free(oldpwd);
 }

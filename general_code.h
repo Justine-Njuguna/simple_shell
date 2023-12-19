@@ -33,6 +33,9 @@
 #define _CODE_UNKNOWN_HOME     137
 #define _CODE_GETCWD_FAILURE   138
 #define _CODE_CHDIR_FAILURE    139
+#define _CODE_UNKNOWN_HOME     137
+#define _CODE_GETCWD_FAILURE   138
+#define _CODE_CHDIR_FAILURE    139
 
 typedef struct __attribute__((__packed__))
 {
